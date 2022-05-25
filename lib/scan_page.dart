@@ -75,6 +75,7 @@ class _ScanPageState extends State<ScanPage> {
         itemBuilder: (context, i) {
           return Column(
             children: [
+              const Divider(),
               Text(
                 loResult[i].id.toString(),
               ),
@@ -99,7 +100,8 @@ class _ScanPageState extends State<ScanPage> {
                   );
                 },
                 child: const Text('connect'),
-              )
+              ),
+              const Divider(),
             ],
           );
         },
