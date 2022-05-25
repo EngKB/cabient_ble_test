@@ -90,6 +90,9 @@ class _DevicePageState extends State<DevicePage> {
                   } else {
                     print('unlock overtime');
                   }
+                  break;
+                case BleParkingLockCommand.status:
+                  print('status $data');
               }
             }
           }
@@ -140,10 +143,13 @@ class _DevicePageState extends State<DevicePage> {
                       },
                       child: const Text('unlock'),
                     ),
-                    // ElevatedButton(
-                    //   onPressed: () {},
-                    //   child: const Text('status'),
-                    // ),
+                    ElevatedButton(
+                      onPressed: () {
+                        CabinetLockDataSource()
+                            .checkStatus(widget.deviceId, eKey!);
+                      },
+                      child: const Text('status'),
+                    ),
                   ],
                 );
               }),

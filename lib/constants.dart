@@ -10,22 +10,23 @@ final bleWriteUuid =
 final bleNotifyUuid =
     Uuid.parse('6e400003-b5a3-f393-e0a9-e50e24dcca9e'.toUpperCase());
 
-
 const stx1 = 0xa3;
 const stx2 = 0xa4;
 const rand = 0x34;
-
 
 class BleParkingLockCommand {
   static const unlock = 0x05;
   static const lock = 0x15;
   static const communicationKey = 0x01;
+  static const status = 0x31;
 }
 
 class BleParkingLockCommandLength {
   static const unlock = 0x0A;
   static const lock = 0x01;
   static const communicationKey = 0x08;
+  static const status = 0x01;
+
 }
 
 class ParkingLockProtocolIndex {
@@ -43,7 +44,6 @@ class ParkingCommandTypes {
   static const reply = 0x02;
   static const automatic = 0x03;
 }
-
 
 extension XOR on Uint8List {
   Uint8List xor(b) {
