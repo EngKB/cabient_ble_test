@@ -3,6 +3,7 @@ import 'package:cabinet_ble_test/device_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:location/location.dart' as loc;
 
 class ScanPage extends StatefulWidget {
   const ScanPage({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _ScanPageState extends State<ScanPage> {
   }
 
   _requestPermission() async {
+    await loc.Location.instance.requestService();
     permissions = [
       Permission.location,
       Permission.bluetooth,
