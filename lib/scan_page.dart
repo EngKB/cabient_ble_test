@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:cabinet_ble_test/constants.dart';
 import 'package:cabinet_ble_test/device_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
@@ -23,13 +21,12 @@ class _ScanPageState extends State<ScanPage> {
   @override
   void initState() {
     _requestPermission();
-
     super.initState();
   }
 
   _requestPermission() async {
     permissions = [
-      Permission.locationWhenInUse,
+      Permission.location,
       Permission.bluetooth,
       Permission.bluetoothConnect,
       Permission.bluetoothScan,
