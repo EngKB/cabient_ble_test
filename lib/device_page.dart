@@ -83,16 +83,14 @@ class _DevicePageState extends State<DevicePage> {
                     break;
                   }
                 case BleParkingLockCommand.unlock:
-                  if (result[6] == 0) {
-                    print('unlock start');
-                  } else if (result[6] == 1) {
+                  if (result[6] == 1) {
                     print('unlock success');
                   } else {
-                    print('unlock overtime');
+                    print('unlock result ${result[6]}');
                   }
                   break;
                 case BleParkingLockCommand.status:
-                  print('status $data');
+                  print('status $result');
               }
             }
           }
