@@ -88,7 +88,7 @@ class _ScanPageState extends State<ScanPage> {
                     .map((e) => Text(e.value.toString()))
                     .toList(),
               ),
-              Text('m: ' + loResult[i].manufacturerData.toString()),
+              Text('m:  + ${loResult[i].manufacturerData.toString()}'),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
