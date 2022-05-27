@@ -26,8 +26,7 @@ class CabinetLockDataSource {
     _sendCommand(deviceId, buffer);
   }
 
-  void checkStatus(String deviceId,int rKey)
-  {
+  void checkStatus(String deviceId, int rKey) {
     final key = rKey ^ rand;
     const cmd = BleParkingLockCommand.status ^ rand;
     var data = [
@@ -55,6 +54,7 @@ class CabinetLockDataSource {
       debugPrint(e.toString());
     }
   }
+
   void unlockParkingLock(String deviceId, int rKey) {
     final key = rKey ^ rand;
     const cmd = BleParkingLockCommand.unlock ^ rand;
@@ -82,12 +82,7 @@ class CabinetLockDataSource {
     try {
       final crc = Crc8MaximDow().convert(buffer).toBigInt();
       buffer.add(int.parse(crc.toRadixString(16), radix: 16));
-      flutterReactiveBle.writeCharacteristicWithoutResponse(
-          QualifiedCharacteristic(
-              characteristicId: bleWriteUuid,
-              serviceId: bleServiceUuid,
-              deviceId: deviceId),
-          value: buffer);
+      _sendCommand(deviceId, buffer);
     } catch (e) {
       debugPrint(e.toString());
     }

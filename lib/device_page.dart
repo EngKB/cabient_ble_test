@@ -95,6 +95,7 @@ class _DevicePageState extends State<DevicePage> {
             }
           }
         });
+        CabinetLockDataSource().getCommunicationKeyParkingLock(widget.deviceId);
       }
     });
     super.initState();
@@ -120,12 +121,12 @@ class _DevicePageState extends State<DevicePage> {
             return Center(
               child: Builder(builder: (context) {
                 if (eKey == null) {
-                  return ElevatedButton(
-                    onPressed: () {
-                      CabinetLockDataSource()
-                          .getCommunicationKeyParkingLock(widget.deviceId);
-                    },
-                    child: const Text('get key'),
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text('get communication key'),
+                      CircularProgressIndicator()
+                    ],
                   );
                 }
 
@@ -162,6 +163,7 @@ class _DevicePageState extends State<DevicePage> {
                 onPressed: () {
                   setState(
                     () {
+                      eKey = null;
                       connectionStream = FlutterReactiveBle().connectToDevice(
                         id: widget.deviceId,
                         servicesWithCharacteristicsToDiscover: {
