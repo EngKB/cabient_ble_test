@@ -40,59 +40,62 @@ class _DevicePageState extends State<DevicePage> {
           ),
         )
             .listen((data) {
-          if (data.isNotEmpty) {
-            if (data.isNotEmpty) {
-              final length = data[ParkingLockProtocolIndex.len];
-              final rand = data[ParkingLockProtocolIndex.rand];
-              int decryptedRand;
-              if (rand - 0x32 < 0) {
-                decryptedRand = 255 - (0x31 - rand);
-              } else {
-                decryptedRand = rand - 0x32;
-              }
-              final key = data[ParkingLockProtocolIndex.key] ^ decryptedRand;
-              final cmd = data[ParkingLockProtocolIndex.cmd] ^ decryptedRand;
-              List<int> result = [
-                //2 Bytes STX
-                data[ParkingLockProtocolIndex.stx1],
-                data[ParkingLockProtocolIndex.stx2],
-                //1 byte length
-                length,
-                //decrypted rand
-                decryptedRand,
-                //key
-                key,
-                //cmd
-                cmd,
-              ];
-              for (int i = 1; i <= length; i++) {
-                result.add(
-                    data[i + ParkingLockProtocolIndex.cmd] ^ decryptedRand);
-              }
-              result.add(data[result.length]);
-              switch (cmd) {
-                case BleParkingLockCommand.communicationKey:
-                  {
-                    if (result[6] == 0) {
-                      print('key failed');
-                    } else {
-                      setState(() {
-                        eKey = key;
-                      });
-                    }
-                    break;
-                  }
-                case BleParkingLockCommand.unlock:
-                  if (result[6] == 1) {
-                    print('unlock success');
+          if (data.isNotEmpty && data.length < 18) {
+            final length = data[ParkingLockProtocolIndex.len];
+            final rand = data[ParkingLockProtocolIndex.rand];
+            int decryptedRand;
+            if (rand - 0x32 < 0) {
+              decryptedRand = 255 - (0x31 - rand);
+            } else {
+              decryptedRand = rand - 0x32;
+            }
+            final key = data[ParkingLockProtocolIndex.key] ^ decryptedRand;
+            final cmd = data[ParkingLockProtocolIndex.cmd] ^ decryptedRand;
+            List<int> result = [
+              //2 Bytes STX
+              data[ParkingLockProtocolIndex.stx1],
+              data[ParkingLockProtocolIndex.stx2],
+              //1 byte length
+              length,
+              //decrypted rand
+              decryptedRand,
+              //key
+              key,
+              //cmd
+              cmd,
+            ];
+            for (int i = 1; i <= length; i++) {
+              result
+                  .add(data[i + ParkingLockProtocolIndex.cmd] ^ decryptedRand);
+            }
+            result.add(data[result.length]);
+            switch (cmd) {
+              case BleParkingLockCommand.communicationKey:
+                {
+                  if (result[6] == 0) {
+                    print('key failed');
                   } else {
-                    print('unlock result ${result[6]}');
+                    final mKey =
+                        data[ParkingLockProtocolIndex.key] ^ decryptedRand;
+
+                    setState(() {
+                      eKey = mKey;
+                    });
                   }
                   break;
-                case BleParkingLockCommand.status:
-                  print('status $result');
-              }
+                }
+              case BleParkingLockCommand.unlock:
+                if (result[6] == 1) {
+                  print('unlock success');
+                } else {
+                  print('unlock result ${result[6]}');
+                }
+                break;
+              case BleParkingLockCommand.status:
+                print('status $result');
             }
+          } else {
+            print('ignored response $data');
           }
         });
         CabinetLockDataSource().getCommunicationKeyParkingLock(widget.deviceId);

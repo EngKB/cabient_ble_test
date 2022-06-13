@@ -23,7 +23,14 @@ class CabinetLockDataSource {
     final crcConverter = Crc8Maxim();
     final crc = crcConverter.convert(buffer).toBigInt();
     buffer.add(crc.toInt());
-    _sendCommand(deviceId, buffer);
+    flutterReactiveBle.writeCharacteristicWithResponse(
+      QualifiedCharacteristic(
+        characteristicId: bleWriteUuid,
+        serviceId: bleServiceUuid,
+        deviceId: deviceId,
+      ),
+      value: buffer,
+    );
   }
 
   void checkStatus(String deviceId, int rKey) {
@@ -82,7 +89,14 @@ class CabinetLockDataSource {
     try {
       final crc = Crc8MaximDow().convert(buffer).toBigInt();
       buffer.add(int.parse(crc.toRadixString(16), radix: 16));
-      _sendCommand(deviceId, buffer);
+       flutterReactiveBle.writeCharacteristicWithoutResponse(
+      QualifiedCharacteristic(
+        characteristicId: bleWriteUuid,
+        serviceId: bleServiceUuid,
+        deviceId: deviceId,
+      ),
+      value: buffer,
+    );
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -94,14 +108,4 @@ class CabinetLockDataSource {
     return Uint8List.fromList(pass).xor(rand);
   }
 
-  void _sendCommand(String deviceId, List<int> buffer) async {
-    await flutterReactiveBle.writeCharacteristicWithResponse(
-      QualifiedCharacteristic(
-        characteristicId: bleWriteUuid,
-        serviceId: bleServiceUuid,
-        deviceId: deviceId,
-      ),
-      value: buffer,
-    );
-  }
 }

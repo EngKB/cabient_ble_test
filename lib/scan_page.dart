@@ -44,10 +44,12 @@ class _ScanPageState extends State<ScanPage> {
     scanResult = flutterReactiveBle.scanForDevices(
       withServices: [],
     ).listen((event) {
-      if (!loResult.any((element) => element.id == event.id)) {
-        setState(() {
-          loResult.add(event);
-        });
+      if (event.id == 'C8:27:B4:AF:F8:AC') {
+        if (!loResult.any((element) => element.id == event.id)) {
+          setState(() {
+            loResult.add(event);
+          });
+        }
       }
     });
   }
