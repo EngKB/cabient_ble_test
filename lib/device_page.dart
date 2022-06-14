@@ -41,7 +41,8 @@ class _DevicePageState extends State<DevicePage> {
           ),
         )
             .listen((data) {
-          if (data.isNotEmpty && data.length < 18) {
+          if (data.isNotEmpty && data[0] == stx1 && data[1] == stx2) {
+            print('response ' + data.toString());
             final length = data[ParkingLockProtocolIndex.len];
             final rand = data[ParkingLockProtocolIndex.rand];
             int decryptedRand;
@@ -92,7 +93,7 @@ class _DevicePageState extends State<DevicePage> {
                 print('status $result');
             }
           } else {
-            print('ignored response $data');
+            print('ignored $data');
           }
         });
         CabinetLockDataSource().getCommunicationKeyParkingLock(widget.deviceId);
