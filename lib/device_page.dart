@@ -20,14 +20,15 @@ class _DevicePageState extends State<DevicePage> {
   late Stream<ConnectionStateUpdate> connectionStream;
   StreamSubscription<ConnectionStateUpdate>? _connection;
   StreamSubscription? _dataStream;
-
   int? eKey;
-  @override
-  void initState() {
+  _connect() {
     connectionStream = FlutterReactiveBle().connectToDevice(
         id: widget.deviceId,
         servicesWithCharacteristicsToDiscover: {
-          bleServiceUuid: [bleNotifyUuid, bleWriteUuid]
+          bleServiceUuid: [
+            bleNotifyUuid,
+            bleWriteUuid,
+          ]
         }).asBroadcastStream();
     _connection = connectionStream.listen((event) {
       if (event.connectionState == DeviceConnectionState.connected) {
@@ -63,12 +64,8 @@ class _DevicePageState extends State<DevicePage> {
               key,
               //cmd
               cmd,
+              data[6] ^ decryptedRand
             ];
-            for (int i = 1; i <= length; i++) {
-              result
-                  .add(data[i + ParkingLockProtocolIndex.cmd] ^ decryptedRand);
-            }
-            result.add(data[result.length]);
             switch (cmd) {
               case BleParkingLockCommand.communicationKey:
                 {
@@ -77,7 +74,6 @@ class _DevicePageState extends State<DevicePage> {
                   } else {
                     final mKey =
                         data[ParkingLockProtocolIndex.key] ^ decryptedRand;
-
                     setState(() {
                       eKey = mKey;
                     });
@@ -101,6 +97,11 @@ class _DevicePageState extends State<DevicePage> {
         CabinetLockDataSource().getCommunicationKeyParkingLock(widget.deviceId);
       }
     });
+  }
+
+  @override
+  void initState() {
+    _connect();
     super.initState();
   }
 
@@ -140,6 +141,7 @@ class _DevicePageState extends State<DevicePage> {
                     const Text('connected'),
                     ElevatedButton(
                       onPressed: () {
+                        print('unlock key ' + eKey!.toString());
                         CabinetLockDataSource()
                             .unlockParkingLock(widget.deviceId, eKey!);
                       },
@@ -167,12 +169,7 @@ class _DevicePageState extends State<DevicePage> {
                   setState(
                     () {
                       eKey = null;
-                      connectionStream = FlutterReactiveBle().connectToDevice(
-                        id: widget.deviceId,
-                        servicesWithCharacteristicsToDiscover: {
-                          bleServiceUuid: [bleNotifyUuid, bleWriteUuid]
-                        },
-                      ).asBroadcastStream();
+                      _connect();
                     },
                   );
                 },
