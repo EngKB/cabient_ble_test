@@ -81,6 +81,7 @@ class _DevicePageState extends State<DevicePage> {
                   break;
                 }
               case BleParkingLockCommand.unlock:
+                print('unlock response');
                 if (result[6] == 1) {
                   print('unlock success');
                 } else {
