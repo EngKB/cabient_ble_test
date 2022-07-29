@@ -23,6 +23,7 @@ class CabinetLockDataSource {
     final crcConverter = Crc8Maxim();
     final crc = crcConverter.convert(buffer).toBigInt();
     buffer.add(crc.toInt());
+    print('key command ' +buffer.toString());
     flutterReactiveBle.writeCharacteristicWithResponse(
       QualifiedCharacteristic(
         characteristicId: bleWriteUuid,
@@ -50,8 +51,9 @@ class CabinetLockDataSource {
         data;
     try {
       final crc = Crc8MaximDow().convert(buffer).toBigInt();
-      buffer.add(int.parse(crc.toRadixString(16), radix: 16));
-      flutterReactiveBle.writeCharacteristicWithoutResponse(
+      buffer.add(crc.toInt());
+      print('status command ' +buffer.toString());
+      flutterReactiveBle.writeCharacteristicWithResponse(
           QualifiedCharacteristic(
               characteristicId: bleWriteUuid,
               serviceId: bleServiceUuid,
@@ -87,8 +89,10 @@ class CabinetLockDataSource {
         ] +
         data;
     try {
-      final crc = Crc8MaximDow().convert(buffer).toBigInt();
-      buffer.add(int.parse(crc.toRadixString(16), radix: 16));
+     final crcConverter = Crc8Maxim();
+    final crc = crcConverter.convert(buffer).toBigInt();
+    buffer.add(crc.toInt());
+      print('unlock command ' +buffer.toString());
        flutterReactiveBle.writeCharacteristicWithoutResponse(
       QualifiedCharacteristic(
         characteristicId: bleWriteUuid,

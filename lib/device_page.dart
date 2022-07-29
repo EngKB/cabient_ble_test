@@ -67,6 +67,7 @@ class _DevicePageState extends State<DevicePage> {
               cmd,
               data[6] ^ decryptedRand
             ];
+            print('decrypted response '+ result.toString());
             switch (cmd) {
               case BleParkingLockCommand.communicationKey:
                 {
@@ -93,7 +94,7 @@ class _DevicePageState extends State<DevicePage> {
                 print('status $result');
             }
           } else {
-            print('ignored $data');
+            // print('ignored $data');
           }
         });
         CabinetLockDataSource().getCommunicationKeyParkingLock(widget.deviceId);
