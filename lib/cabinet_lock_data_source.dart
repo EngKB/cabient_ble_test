@@ -77,7 +77,7 @@ class CabinetLockDataSource {
       0xFF,
       0xFF,
       0xFF,
-      0x00 ^ rand,
+      0x01 ^ rand,
     ];
     List<int> buffer = [
           stx1,
