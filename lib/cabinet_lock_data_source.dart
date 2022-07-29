@@ -64,19 +64,19 @@ class CabinetLockDataSource {
     }
   }
 
-  void unlockParkingLock(String deviceId, int rKey) {
+  void unlock(String deviceId, int rKey) {
     final key = rKey ^ rand;
     const cmd = BleParkingLockCommand.unlock ^ rand;
     var data = [
       ParkingCommandTypes.control ^ rand,
-      0x01 ^ rand,
-      0x02 ^ rand,
-      0x03 ^ rand,
       0x04 ^ rand,
-      0x30,
-      0x11,
-      0x5B,
-      0xD7,
+      0x04 ^ rand,
+      0x04 ^ rand,
+      0x04 ^ rand,
+      0xFF,
+      0xFF,
+      0xFF,
+      0xFF,
       0x00 ^ rand,
     ];
     List<int> buffer = [
@@ -89,18 +89,15 @@ class CabinetLockDataSource {
         ] +
         data;
     try {
-     final crcConverter = Crc8Maxim();
-    final crc = crcConverter.convert(buffer).toBigInt();
-    buffer.add(crc.toInt());
+    final crc = Crc8MaximDow().convert(buffer).toBigInt();
+      buffer.add(int.parse(crc.toRadixString(16), radix: 16));
       print('unlock command ' +buffer.toString());
-       flutterReactiveBle.writeCharacteristicWithoutResponse(
-      QualifiedCharacteristic(
-        characteristicId: bleWriteUuid,
-        serviceId: bleServiceUuid,
-        deviceId: deviceId,
-      ),
-      value: buffer,
-    );
+       flutterReactiveBle.writeCharacteristicWithResponse(
+          QualifiedCharacteristic(
+              characteristicId: bleWriteUuid,
+              serviceId: bleServiceUuid,
+              deviceId: deviceId),
+          value: buffer,);
     } catch (e) {
       debugPrint(e.toString());
     }

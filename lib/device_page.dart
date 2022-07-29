@@ -144,9 +144,8 @@ class _DevicePageState extends State<DevicePage> {
                     const Text('connected'),
                     ElevatedButton(
                       onPressed: () {
-                        print('unlock key ' + eKey!.toString());
                         CabinetLockDataSource()
-                            .unlockParkingLock(widget.deviceId, eKey!);
+                            .unlock(widget.deviceId, eKey!);
                       },
                       child: const Text('unlock'),
                     ),
